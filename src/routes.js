@@ -5,7 +5,9 @@ const {
 } = Apify;
 const { applyFunction } = require('./utils');
 
-
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 async function autoScroll(page){
     await page.evaluate(async () => {
@@ -59,6 +61,8 @@ exports.SEARCH_PAGE = async (countryCode, page, request, query, requestQueue, ma
             for (let jobElement of lstJob) {
 
                 jobElement.querySelector('.Fol1qc').click()
+
+                await sleep(500)
 
                 // Wait ? 0.8 sec ?
                 const jobContentElement = document.querySelector('.whazf.bD1FPe .pE8vnd.avtvi')
