@@ -54,7 +54,7 @@ exports.SEARCH_PAGE = async (countryCode, page, request, query, requestQueue, ma
     // log.info(`Found ${resultsLength} products on the page.`);
     // eslint-disable-next-line no-shadow
     const data = await page.evaluate(
-        (countryCode, maxPostCount, query, savedItems) => {
+        async (countryCode, maxPostCount, query, savedItems) => {
 
             let data = []
             let lstJob = Array.from(document.querySelectorAll('.gws-plugins-horizon-jobs__li-ed'))
