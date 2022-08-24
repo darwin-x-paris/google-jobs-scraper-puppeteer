@@ -69,7 +69,12 @@ exports.SEARCH_PAGE = async (countryCode, page, request, query, requestQueue, ma
                 const jobContentElement = document.querySelector('.whazf.bD1FPe .pE8vnd.avtvi')
                 
                 const title = jobContentElement.querySelector('.sH3zFd .KLsYvd').innerText
-                const content = jobContentElement.querySelector('.YgLbBe.YRi0le .HBvzbc').innerText
+                let content = ''
+                if (jobContentElement.querySelector('.YgLbBe.YRi0le .HBvzbc'))
+                    jobContentElement.querySelector('.YgLbBe.YRi0le .HBvzbc').innerText
+                else
+                    jobContentElement.querySelector('.JvOW3e').innerText
+        
 
                 const elemEmployerLocation = jobContentElement.querySelector('.tJ9zfc')
                 const elemsDiv = elemEmployerLocation.querySelectorAll(':scope > div')
