@@ -36,23 +36,18 @@ exports.SEARCH_PAGE = async (countryCode, page, request, query, requestQueue, ma
 
     await page.waitForSelector('div.sh-pr__product-results');
 
-    const resultsLength = await page.evaluate(() => {
-        return document.querySelector('div.sh-pr__product-results').children.length;
-    });
-
-
     // check HTML if page has no results
-    if (resultsLength === 0) {
-        log.warning('The page has no results. Check dataset for more info.');
+    // if (resultsLength === 0) {
+    //     log.warning('The page has no results. Check dataset for more info.');
 
-        await Apify.pushData({
-            '#debug': Apify.utils.createRequestDebugInfo(request),
-        });
-    }
+    //     await Apify.pushData({
+    //         '#debug': Apify.utils.createRequestDebugInfo(request),
+    //     });
+    // }
 
     await autoScroll(page);
 
-    log.info(`Found ${resultsLength} products on the page.`);
+    // log.info(`Found ${resultsLength} products on the page.`);
     // eslint-disable-next-line no-shadow
     const data = await page.evaluate(
         (countryCode, maxPostCount, query, savedItems) => {
