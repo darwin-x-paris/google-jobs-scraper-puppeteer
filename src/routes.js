@@ -6,7 +6,7 @@ const {
 const { applyFunction } = require('./utils');
 
 
-async function autoScroll(page){
+async function autoScroll(page) {
     await page.evaluate(async () => {
         await new Promise((resolve, reject) => {
 
@@ -20,7 +20,7 @@ async function autoScroll(page){
                 document.querySelector('.zxU94d.gws-plugins-horizon-jobs__tl-lvc').scrollBy(0, distance);
                 totalHeight += distance;
 
-                if(totalHeight >= scrollHeight - elementScrolled.clientHeight){
+                if (totalHeight >= scrollHeight - elementScrolled.clientHeight) {
                     clearInterval(timer);
                     resolve();
                 }
@@ -67,14 +67,14 @@ exports.SEARCH_PAGE = async (countryCode, page, request, query, requestQueue, ma
 
                 // Wait ? 0.8 sec ?
                 const jobContentElement = document.querySelector('.whazf.bD1FPe .pE8vnd.avtvi')
-                
+
                 const title = jobContentElement.querySelector('.sH3zFd .KLsYvd').innerText
+
                 let content = ''
-                if (jobContentElement.querySelector('.YgLbBe.YRi0le .HBvzbc'))
-                    jobContentElement.querySelector('.YgLbBe.YRi0le .HBvzbc').innerText
+                if (jobContentElement.querySelector('.HBvzbc'))
+                    content = jobContentElement.querySelector('.HBvzbc').innerText
                 else
-                    jobContentElement.querySelector('.JvOW3e').innerText
-        
+                    content = jobContentElement.querySelector('.JvOW3e').innerText
 
                 const elemEmployerLocation = jobContentElement.querySelector('.tJ9zfc')
                 const elemsDiv = elemEmployerLocation.querySelectorAll(':scope > div')
@@ -83,7 +83,7 @@ exports.SEARCH_PAGE = async (countryCode, page, request, query, requestQueue, ma
 
                 // Get infos from job :
                 data.push({
-                    countryCode, 
+                    countryCode,
                     query,
                     title,
                     content,
