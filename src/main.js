@@ -49,7 +49,7 @@ Apify.main(async () => {
             log.info(`Processing: ${request.url}`);
             log.info(`Number of page: ${request.userData.pageNumber}`);
             const { label, query } = request.userData;
-            return routes[label](page, request, query, requestQueue, maxPostCount, evaledFunc);
+            return routes[label](countryCode, page, request, query, requestQueue, maxPostCount, evaledFunc);
         },
 
         handleFailedRequestFunction: async ({ request }) => {

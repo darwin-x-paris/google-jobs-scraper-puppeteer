@@ -5,7 +5,31 @@ const {
 } = Apify;
 const { applyFunction } = require('./utils');
 
-exports.SEARCH_PAGE = async (page, request, query, requestQueue, maxPostCount, evaledFunc) => {
+
+
+async function autoScroll(page){
+    await page.evaluate(async () => {
+        await new Promise((resolve, reject) => {
+            var totalHeight = 0;
+            var distance = 20000;
+            let elementScrolled = document.querySelector('.gws-plugins-horizon-jobs__tl-no-filters')
+
+            var timer = setInterval(() => {
+                var scrollHeight = elementScrolled.scrollHeight
+                document.querySelector('.zxU94d.gws-plugins-horizon-jobs__tl-lvc').scrollBy(0, distance);
+                totalHeight += distance;
+
+                if(totalHeight >= scrollHeight - elementScrolled.clientHeight){
+                    clearInterval(timer);
+                    resolve();
+                }
+            }, 100);
+        });
+    });
+}
+
+
+exports.SEARCH_PAGE = async (countryCode, page, request, query, requestQueue, maxPostCount, evaledFunc) => {
     // CHECK FOR SELECTOR
     let { savedItems, pageNumber } = request.userData;
     const { hostname } = request.userData;
@@ -26,214 +50,44 @@ exports.SEARCH_PAGE = async (page, request, query, requestQueue, maxPostCount, e
         });
     }
 
+    await autoScroll(page);
 
     log.info(`Found ${resultsLength} products on the page.`);
     // eslint-disable-next-line no-shadow
     const data = await page.evaluate(
-        (maxPostCount, query, savedItems) => {
+        (countryCode, maxPostCount, query, savedItems) => {
 
-            // nodes with items
-            let results = Array.from(document.querySelectorAll('.sh-dlr__list-result'));
-            if (results.length === 0) results = Array.from(document.querySelectorAll('.sh-dlr__content'));
-            // limit the results to be scraped, if maxPostCount exists
-            if (maxPostCount) {
-                results = results.slice(0, maxPostCount - savedItems);
-            }
+            let data = []
+            let lstJob = Array.from(document.querySelectorAll('.gws-plugins-horizon-jobs__li-ed'))
+            for (let jobElement of lstJob) {
 
-            // eslint-disable-next-line no-shadow
-            const data = [];
-            // ITERATING NODES TO GET RESULTS
-            for (let i = 0; i < results.length; i++) {
-                // Please pay attention that "merchantMetrics" and "reviewsLink" were removed from the  "SEARCH" page.
-                const item = results[i];
-                // KEYS OF OUTPUT OBJ
+                jobElement.querySelector('.Fol1qc').click()
 
-                // console.log("Product", i)
+                // Wait ? 0.8 sec ?
+                const jobContentElement = document.querySelector('.whazf.bD1FPe .pE8vnd.avtvi')
+                
+                const title = jobContentElement.querySelector('.sH3zFd .KLsYvd').innerText
+                const content = jobContentElement.querySelector('.YgLbBe.YRi0le .HBvzbc').innerText
 
-                const type = 'result'
+                const elemEmployerLocation = jobContentElement.querySelector('.tJ9zfc')
+                const elemsDiv = elemEmployerLocation.querySelectorAll(':scope > div')
+                const employer = elemsDiv[0].innerText
+                const location = elemsDiv[1].innerText
 
-                const title = item.querySelector('h3') ? item.querySelector('h3') : null;
-
-                const productName = title?.textContent ?? null;
-
-                // const productLinkAnchor = item.querySelector('a[href*="shopping/product/"]')
-                //     ? item.querySelector('a[href*="shopping/product/"]')
-                //     : null;
-                // const productLink = productLinkAnchor ? productLinkAnchor.href : null;
-
-                // const price = item.querySelector('div[data-sh-or="price"] div > span > span')?.textContent ?? null;
-
-                const description = item.querySelectorAll('div.hBUZL')[1]?.textContent ?? null;
-
-                // const merchantName = item.querySelector('div[data-sh-or="price"]')?.nextSibling?.textContent ?? null;
-
-                // const merchantLink = item.querySelector('div[data-sh-or="price"]')?.parentElement?.parentElement?.href ?? null;
-
-                // const idArray = productLink ? productLink.split('?')[0].split('/') : null;
-                // const shoppingId = idArray ? idArray[idArray.length - 1] : null;
-
-                console.log("Item ;", item)
-                console.log("Item div ;", item.querySelector('div.tDoYpc div'))
-
-                let reviewsScore = 0
-                let reviewsCount = 0
-
-                if (item.querySelector('div.tDoYpc div')) {
-
-                    const reviewStr = item.querySelector('div.tDoYpc div').getAttribute('aria-label').replace(/,/g, '.')
-                    const numbers = reviewStr.match(/\d+\.?\d*/g)
-                    const n1 = parseFloat(numbers[0])
-                    const n2 = parseFloat(numbers[1])
-
-                    if (n1 > 5 && n2 <= 5) {
-
-                        reviewsScore = n2
-                        reviewsCount = n1
-
-                    } else if (n2 > 5 && n1 <= 5) {
-
-                        reviewsScore = n1
-                        reviewsCount = n2
-
-                    } else {
-                        // L'un des 2 n'est pas < 5 ... donc doute ...
-                        // Seule possibilité : Les 2 sont < 5, puisque la note sur 5 ... ne peut être > 5 ... genious
-
-                        // Le nb reviews est le 
-                        const elemText = item.querySelector('div.tDoYpc div div').textContent.replace(/\s+/g, '')
-                        if (elemText.indexOf(n1) > -1) {
-                            reviewsScore = n2
-                            reviewsCount = n1
-                        } else {
-                            reviewsScore = n1
-                            reviewsCount = n2
-                        }
-                    }
-
-                }
-
-                // FINAL OUTPUT OBJ
-                const output = {
+                // Get infos from job :
+                data.push({
+                    countryCode, 
                     query,
-                    type,
-                    productName,
-                    // productLink,
-                    // price,
-                    description,
-                    // merchantName,
-                    // merchantLink,
-                    // shoppingId,
-                    reviewsScore,
-                    reviewsCount,
-                    positionOnSearchPage: i + 1,
-                    productDetails: item.querySelectorAll('.translate-content')[1]?.textContent.trim(),
-                };
-
-                data.push(output);
-            }
-
-
-            // Ads :
-            // nodes with items
-            let adContainer = document.querySelector('.GhTN2e')
-            let ads = Array.from(adContainer.querySelectorAll('.KZmu8e'));
-
-            // ITERATING NODES TO GET ADS
-            for (let i = 0; i < ads.length; i++) {
-                // Please pay attention that "merchantMetrics" and "reviewsLink" were removed from the  "SEARCH" page.
-                const item = ads[i];
-                // KEYS OF OUTPUT OBJ
-
-                // console.log("Ad", i)
-
-                const type = 'ad'
-
-                const title = item.querySelector('.sh-np__product-title') ? item.querySelector('.sh-np__product-title') : null;
-
-                const productName = title?.textContent ?? null;
-
-                // const productLinkAnchor = item.querySelector('a[href*="shopping/product/"]')
-                //     ? item.querySelector('a[href*="shopping/product/"]')
-                //     : null;
-                // const productLink = productLinkAnchor ? productLinkAnchor.href : null;
-
-                // const price = item.querySelector('div[data-sh-or="price"] div > span > span')?.textContent ?? null;
-
-                // const description = item.querySelectorAll('div.hBUZL')[1]?.textContent ?? null;
-
-                // const merchantName = item.querySelector('div[data-sh-or="price"]')?.nextSibling?.textContent ?? null;
-
-                // const merchantLink = item.querySelector('div[data-sh-or="price"]')?.parentElement?.parentElement?.href ?? null;
-
-                // const idArray = productLink ? productLink.split('?')[0].split('/') : null;
-                // const shoppingId = idArray ? idArray[idArray.length - 1] : null;
-
-                let reviewsScore = 0
-                let reviewsCount = 0
-
-                console.log("Ad ;", item)
-                console.log("Ad div ;", item.querySelector('div.U6puSd div'))
-
-                if (item.querySelector('div.U6puSd div')) {
-
-                    const reviewStr = item.querySelector('div.U6puSd div').getAttribute('aria-label')
-                    const numbers = reviewStr.match(/\d+\.?\d*/g)
-                    const n1 = parseFloat(numbers[0])
-                    const n2 = parseFloat(numbers[1])
-
-                    if (n1 > 5 && n2 <= 5) {
-
-                        reviewsScore = n2
-                        reviewsCount = n1
-
-                    } else if (n2 > 5 && n1 <= 5) {
-
-                        reviewsScore = n1
-                        reviewsCount = n2
-
-                    } else {
-                        // L'un des 2 n'est pas < 5 ... donc doute ...
-                        // Seule possibilité : Les 2 sont < 5, puisque la note sur 5 ... ne peut être > 5 ... genious
-
-                        // Le nb reviews est le 
-                        const elemText = item.querySelector('div.U6puSd div span').textContent.replace(/\s+/g, '')
-                        if (elemText.indexOf(n1) > -1) {
-                            reviewsScore = n2
-                            reviewsCount = n1
-                        } else {
-                            reviewsScore = n1
-                            reviewsCount = n2
-                        }
-                    }
-                }
-
-                // const reviewsScore = item.querySelector('div[aria-label*="product reviews"] span')?.textContent ?? null;
-                // const reviewsCount = item.querySelector('div[aria-label*="product reviews"]')
-                //     ? item.querySelector('div[aria-label*="product reviews"]').getAttribute('aria-label').split(' ')[0]
-                //     : null;
-
-                // FINAL OUTPUT OBJ
-                const output = {
-                    query,
-                    type,
-                    productName,
-                    // productLink,
-                    // price,
-                    description: '',
-                    // merchantName,
-                    // merchantLink,
-                    // shoppingId,
-                    reviewsScore,
-                    reviewsCount,
-                    positionOnSearchPage: i + 1,
-                    productDetails: item.querySelectorAll('.translate-content')[1]?.textContent.trim(),
-                };
-
-                data.push(output);
+                    title,
+                    content,
+                    employer,
+                    location,
+                })
             }
 
             return data;
         },
+        countryCode,
         maxPostCount,
         query,
         savedItems,
