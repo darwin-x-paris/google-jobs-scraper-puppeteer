@@ -5,9 +5,6 @@ const {
 } = Apify;
 const { applyFunction } = require('./utils');
 
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
 
 async function autoScroll(page){
     await page.evaluate(async () => {
@@ -56,6 +53,10 @@ exports.SEARCH_PAGE = async (countryCode, page, request, query, requestQueue, ma
     const data = await page.evaluate(
         async (countryCode, maxPostCount, query, savedItems) => {
 
+            function sleep(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+            
             let data = []
             let lstJob = Array.from(document.querySelectorAll('.gws-plugins-horizon-jobs__li-ed'))
             for (let jobElement of lstJob) {
