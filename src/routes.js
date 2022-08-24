@@ -10,6 +10,8 @@ const { applyFunction } = require('./utils');
 async function autoScroll(page){
     await page.evaluate(async () => {
         await new Promise((resolve, reject) => {
+
+            console.log("Scrolling ...")
             var totalHeight = 0;
             var distance = 20000;
             let elementScrolled = document.querySelector('.gws-plugins-horizon-jobs__tl-no-filters')
@@ -34,7 +36,7 @@ exports.SEARCH_PAGE = async (countryCode, page, request, query, requestQueue, ma
     let { savedItems, pageNumber } = request.userData;
     const { hostname } = request.userData;
 
-    await page.waitForSelector('div.sh-pr__product-results');
+    await page.waitForSelector('div.KzzVYe');
 
     // check HTML if page has no results
     // if (resultsLength === 0) {
