@@ -108,5 +108,5 @@ exports.SEARCH_PAGE = async (countryCode, page, request, query, requestQueue, ma
         await Apify.pushData(item);
         savedItems++;
     }
-    log.info(`${Math.min(maxPostCount, resultsLength)} items on the page were successfully scraped.`);
+    log.info(`${Math.min(maxPostCount, 0)} items on the page were successfully scraped.`);
 };
