@@ -76,8 +76,13 @@ exports.SEARCH_PAGE = async (countryCode, page, request, query, requestQueue, ma
                 else
                     content = jobContentElement.querySelector('.JvOW3e').innerText
 
+                console.log("Job", title)
+
                 const elemEmployerLocation = jobContentElement.querySelector('.tJ9zfc')
                 const elemsDiv = elemEmployerLocation.querySelectorAll(':scope > div')
+
+                console.log("Employer location : ", elemEmployerLocation)
+
                 const employer = elemsDiv[0].innerText
                 const location = elemsDiv[1].innerText
 
