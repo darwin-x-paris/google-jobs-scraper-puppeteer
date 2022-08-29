@@ -7,43 +7,46 @@ const { applyFunction, saveScreenshot } = require('./utils');
 
 
 async function autoScroll(page) {
-    await new Promise(async (resolve, reject) => {
 
-        let lstJob = await page.evaluate(() => { return document.querySelectorAll('.gws-plugins-horizon-jobs__li-ed') })
-        console.log("Nb jobs loaded :", lstJob.length)
-        console.log("Scrolling ...")
+    let lstJob = await page.evaluate(() => { return document.querySelectorAll('.gws-plugins-horizon-jobs__li-ed') })
+    console.log("Nb jobs loaded :", lstJob.length)
+    console.log("Scrolling ...")
 
-        await page.evaluate(async () => {
+    await page.evaluate(async () => {
 
-            function sleep(ms) {
-                return new Promise(resolve => setTimeout(resolve, ms));
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        async function scrollThat() {
+
+            // console.log("scrollThat 1")
+            await sleep(500)
+            // console.log("scrollThat 2")
+            var totalHeight = 0;
+            var distance = 20000;
+            let elementScrolled = document.querySelector('.gws-plugins-horizon-jobs__tl-no-filters')
+            var scrollHeight = elementScrolled.scrollHeight
+            document.querySelector('.zxU94d.gws-plugins-horizon-jobs__tl-lvc').scrollBy(0, distance);
+            totalHeight += distance;
+    
+            await sleep(1500)
+            // console.log("scrollThat 3", lastHeight, elementScrolled.clientHeight)
+            if (lastHeight < elementScrolled.clientHeight) {
+                lastHeight = elementScrolled.clientHeight
+                return scrollThat()
+            } else {
+                return
             }
-        
-            async function scrollThat() {
-        
-                await sleep(500)
-                var totalHeight = 0;
-                var distance = 20000;
-                let elementScrolled = document.querySelector('.gws-plugins-horizon-jobs__tl-no-filters')
-                var scrollHeight = elementScrolled.scrollHeight
-                document.querySelector('.zxU94d.gws-plugins-horizon-jobs__tl-lvc').scrollBy(0, distance);
-                totalHeight += distance;
-        
-                await sleep(1500)
-                if (totalHeight >= scrollHeight - elementScrolled.clientHeight) {
-                    return scrollThat()
-                } else {
-                    return
-                }
-            }
-        
-            await scrollThat()
-        });
-        
-        let lstJob2 = await page.evaluate(() => { return document.querySelectorAll('.gws-plugins-horizon-jobs__li-ed') })
-        console.log("Nb jobs loaded 2 :", lstJob2.length)
-        resolve()
+        }
+    
+
+        await scrollThat()
     });
+
+    let lstJob2 = await page.evaluate(() => { return document.querySelectorAll('.gws-plugins-horizon-jobs__li-ed') })
+    console.log("Nb jobs loaded 2 :", lstJob2.length)
+
 }
 
 
