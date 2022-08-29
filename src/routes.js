@@ -102,7 +102,7 @@ exports.SEARCH_PAGE = async (countryCode, page, request, query, requestQueue, ma
                 if (jobContentElement.querySelector('.HBvzbc'))
                     content = jobContentElement.querySelector('.HBvzbc').innerText
                 else
-                    content = jobContentElement.querySelector('.JvOW3e').innerText
+                    content = jobContentElement.querySelector('.JvOW3e')?.innerText
 
                 // console.log("Job", title)
 
