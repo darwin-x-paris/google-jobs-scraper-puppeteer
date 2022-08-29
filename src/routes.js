@@ -42,7 +42,7 @@ async function autoScroll(page) {
         
         let lstJob2 = await page.evaluate(() => { return document.querySelectorAll('.gws-plugins-horizon-jobs__li-ed') })
         console.log("Nb jobs loaded 2 :", lstJob2.length)
-
+        resolve()
     });
 }
 
