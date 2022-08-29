@@ -7,14 +7,16 @@ const { applyFunction, saveScreenshot } = require('./utils');
 
 
 async function autoScroll(page) {
-    await page.evaluate(async () => {
-        await new Promise((resolve, reject) => {
+    await new Promise((resolve, reject) => {
 
-            console.log("Scrolling ...")
+        let lstJob = Array.from(document.querySelectorAll('.gws-plugins-horizon-jobs__li-ed'))
+        console.log("Nb jobs loaded :", lstJob.length)
+        console.log("Scrolling ...")
+
+        await page.evaluate(async () => {
             var totalHeight = 0;
             var distance = 20000;
             let elementScrolled = document.querySelector('.gws-plugins-horizon-jobs__tl-no-filters')
-
             var timer = setInterval(() => {
                 var scrollHeight = elementScrolled.scrollHeight
                 document.querySelector('.zxU94d.gws-plugins-horizon-jobs__tl-lvc').scrollBy(0, distance);
@@ -26,6 +28,10 @@ async function autoScroll(page) {
                 }
             }, 2300);
         });
+        
+        let lstJob2 = Array.from(document.querySelectorAll('.gws-plugins-horizon-jobs__li-ed'))
+        console.log("Nb jobs loaded :", lstJob2.length)
+
     });
 }
 
@@ -46,7 +52,12 @@ exports.SEARCH_PAGE = async (countryCode, page, request, query, requestQueue, ma
     //     });
     // }
 
+
+
     await autoScroll(page);
+
+    let lstJob = Array.from(document.querySelectorAll('.gws-plugins-horizon-jobs__li-ed'))
+    let nbResults = lstJob.length
 
     // log.info(`Found ${resultsLength} products on the page.`);
     // eslint-disable-next-line no-shadow
@@ -116,5 +127,5 @@ exports.SEARCH_PAGE = async (countryCode, page, request, query, requestQueue, ma
         await Apify.pushData(item);
         savedItems++;
     }
-    log.info(`${Math.min(maxPostCount, 0)} items on the page were successfully scraped.`);
+    log.info(`${Math.min(maxPostCount, nbResults)} items on the page were successfully scraped.`);
 };
