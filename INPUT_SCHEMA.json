@@ -21,7 +21,7 @@
             "title": "Country",
             "type": "string",
             "description": "Country determines the IP address of the proxy used for the query and the Google Shopping domain (e.g. <code>google.es</code> for Spain). <br><br>This setting only applies to <strong>Search queries</strong>, but not to <strong>URLs</strong>.",
-            "default": "us",
+            "default": "fr",
             "editor": "select",
             "enum": [
                 "us",
