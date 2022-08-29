@@ -3,7 +3,7 @@ const Apify = require('apify');
 const {
     utils: { log },
 } = Apify;
-const { applyFunction } = require('./utils');
+const { applyFunction, saveScreenshot } = require('./utils');
 
 
 async function autoScroll(page) {
@@ -99,6 +99,9 @@ exports.SEARCH_PAGE = async (countryCode, page, request, query, requestQueue, ma
         query,
         savedItems,
     );
+
+    await saveScreenshot(page)
+
     // ITERATING ITEMS TO EXTEND WITH USERS FUNCTION
     for (let item of data) {
         if (evaledFunc) {

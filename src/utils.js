@@ -128,9 +128,17 @@ async function* fromStartUrls(startUrls, name = 'STARTURLS') {
     }
 }
 
+
+const saveScreenshot = async (page, key = 'OUTPUT') => {
+    const screenshotBuffer = await page.screenshot({ fullPage: true });
+    await Apify.setValue(key, screenshotBuffer, { contentType: 'image/png' });
+};
+
 module.exports = {
     checkAndEval,
     applyFunction,
     makeRequestList,
     fromStartUrls,
+    saveScreenshot,
 };
+
