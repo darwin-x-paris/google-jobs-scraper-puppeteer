@@ -7,7 +7,7 @@ const { applyFunction, saveScreenshot } = require('./utils');
 
 
 async function autoScroll(page) {
-    await new Promise((resolve, reject) => {
+    await new Promise(async (resolve, reject) => {
 
         let lstJob = Array.from(document.querySelectorAll('.gws-plugins-horizon-jobs__li-ed'))
         console.log("Nb jobs loaded :", lstJob.length)
