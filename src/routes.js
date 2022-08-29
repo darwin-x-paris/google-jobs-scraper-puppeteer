@@ -9,7 +9,7 @@ const { applyFunction, saveScreenshot } = require('./utils');
 async function autoScroll(page) {
     await new Promise(async (resolve, reject) => {
 
-        let lstJob = Array.from(document.querySelectorAll('.gws-plugins-horizon-jobs__li-ed'))
+        let lstJob = await page.evaluate(() => { return document.querySelectorAll('.gws-plugins-horizon-jobs__li-ed') })
         console.log("Nb jobs loaded :", lstJob.length)
         console.log("Scrolling ...")
 
@@ -29,7 +29,7 @@ async function autoScroll(page) {
             }, 2300);
         });
         
-        let lstJob2 = Array.from(document.querySelectorAll('.gws-plugins-horizon-jobs__li-ed'))
+        let lstJob2 = await page.evaluate(() => { return document.querySelectorAll('.gws-plugins-horizon-jobs__li-ed') })
         console.log("Nb jobs loaded :", lstJob2.length)
 
     });
@@ -56,7 +56,7 @@ exports.SEARCH_PAGE = async (countryCode, page, request, query, requestQueue, ma
 
     await autoScroll(page);
 
-    let lstJob = Array.from(document.querySelectorAll('.gws-plugins-horizon-jobs__li-ed'))
+    let lstJob = await page.evaluate(() => { return document.querySelectorAll('.gws-plugins-horizon-jobs__li-ed') })
     let nbResults = lstJob.length
 
     // log.info(`Found ${resultsLength} products on the page.`);
