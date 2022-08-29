@@ -18,6 +18,9 @@ async function autoScroll(page) {
             return new Promise(resolve => setTimeout(resolve, ms));
         }
 
+        let lastHeight = 0
+
+
         async function scrollThat() {
 
             // console.log("scrollThat 1")
