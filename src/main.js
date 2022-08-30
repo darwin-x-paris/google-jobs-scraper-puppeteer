@@ -11,6 +11,8 @@ Apify.main(async () => {
     // Validate the input
     if (!input) throw new Error('Missing configuration');
 
+    console.log('Input :', input)
+
     const { queries = null, inputUrl = null, countryCode = 'us', maxPostCount, extendOutputFunction = null } = input;
 
     if (!(queries && countryCode) && !inputUrl) {
