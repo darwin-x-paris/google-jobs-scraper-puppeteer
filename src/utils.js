@@ -63,8 +63,9 @@ function countryCodeToCountryName(countryCode) {
 
 // New function which forms a URL from countryCode and query params
 function formUrl(countryCode, query) {
-    const hostname = '"' + countryCodeToGoogleHostname(countryCode) + '" ' + countryCodeToCountryName(countryCode);
-    const url = `https://www.${hostname}/search?q=${encodeURIComponent(query)}&ibp=htl;jobs#htivrt=jobs&fpstate=tldetail`;
+    const hostname = countryCodeToGoogleHostname(countryCode)
+    const strQuery = '"' + query + '" ' + countryCodeToCountryName(countryCode);
+    const url = `https://www.${hostname}/search?q=${encodeURIComponent(strQuery)}&ibp=htl;jobs#htivrt=jobs&fpstate=tldetail`;
     return { url, hostname };
 }
 
