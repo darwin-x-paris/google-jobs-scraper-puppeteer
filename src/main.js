@@ -19,20 +19,21 @@ Apify.main(async () => {
 
     // Prepare the initial list of google shopping queries and request queue
     const requestList = await makeRequestList(queries, inputUrl, countryCode);
-    log.info('Search URLs:');
-    requestList.requests.forEach((r) => { console.log('  ', r.url); });
+    log.info('Search URLs:')
+    requestList.requests.forEach((r) => { console.log('  ', r.url) })
 
-    const requestQueue = await Apify.openRequestQueue();
+    const requestQueue = await Apify.openRequestQueue()
 
+    log.info("Country code :", countryCode, countryCode.toUpperCase())
 
     // if exists, evaluate extendOutputFunction
-    let evaledFunc;
-    if (extendOutputFunction) evaledFunc = checkAndEval(extendOutputFunction);
+    let evaledFunc
+    if (extendOutputFunction) evaledFunc = checkAndEval(extendOutputFunction)
 
     const proxyConfiguration = await Apify.createProxyConfiguration({
         groups: ['RESIDENTIAL'],
         countryCode: countryCode.toUpperCase()
-    });
+    })
 
     // crawler config
     const crawler = new Apify.PuppeteerCrawler({

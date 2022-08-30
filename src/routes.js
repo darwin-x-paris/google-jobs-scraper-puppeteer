@@ -60,18 +60,7 @@ exports.SEARCH_PAGE = async (countryCode, page, request, query, requestQueue, ma
 
     await page.waitForSelector('div.KzzVYe');
 
-    // check HTML if page has no results
-    // if (resultsLength === 0) {
-    //     log.warning('The page has no results. Check dataset for more info.');
-
-    //     await Apify.pushData({
-    //         '#debug': Apify.utils.createRequestDebugInfo(request),
-    //     });
-    // }
-
-
-
-    await autoScroll(page);
+    // await autoScroll(page);
 
     let lstJob = await page.evaluate(() => { return document.querySelectorAll('.gws-plugins-horizon-jobs__li-ed') })
     let nbResults = lstJob.length
