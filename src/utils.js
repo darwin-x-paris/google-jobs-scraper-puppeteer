@@ -2,6 +2,7 @@ const Apify = require('apify');
 
 const { log } = Apify.utils;
 const googleDomains = require('./google-domains.json');
+const countryName = require('./country-name.json');
 
 function checkAndEval(extendOutputFunction) {
     let evaledFunc;
@@ -55,9 +56,14 @@ function countryCodeToGoogleHostname(countryCode) {
     return googleDomains[suffix];
 }
 
+function countryCodeToCountryName(countryCode) {
+    const suffix = countryCode.toUpperCase();
+    return countryName[suffix] ? countryName[suffix] : ''
+}
+
 // New function which forms a URL from countryCode and query params
 function formUrl(countryCode, query) {
-    const hostname = countryCodeToGoogleHostname(countryCode);
+    const hostname = '"' + countryCodeToGoogleHostname(countryCode) + '" ' + countryCodeToCountryName(countryCode);
     const url = `https://www.${hostname}/search?q=${encodeURIComponent(query)}&ibp=htl;jobs#htivrt=jobs&fpstate=tldetail`;
     return { url, hostname };
 }
