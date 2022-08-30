@@ -51,6 +51,7 @@ async function applyFunction(page, extendOutputFunction, item) {
 
 function countryCodeToGoogleHostname(countryCode) {
     const suffix = countryCode.toUpperCase();
+    console.log("countryCodeToGoogleHostname :", countryCode, suffix, googleDomains[suffix])
     return googleDomains[suffix];
 }
 
