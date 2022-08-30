@@ -26,11 +26,12 @@ Apify.main(async () => {
 
     const requestQueue = await Apify.openRequestQueue()
 
-    log.info("Country code :", countryCode, countryCode.toUpperCase())
-
+    
     // if exists, evaluate extendOutputFunction
     let evaledFunc
     if (extendOutputFunction) evaledFunc = checkAndEval(extendOutputFunction)
+    
+    console.log("Country code :", countryCode, countryCode.toUpperCase())
 
     const proxyConfiguration = await Apify.createProxyConfiguration({
         groups: ['RESIDENTIAL'],
