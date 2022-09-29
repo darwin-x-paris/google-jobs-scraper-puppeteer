@@ -32,7 +32,7 @@ async function autoScroll(page) {
             var scrollHeight = elementScrolled.scrollHeight
             document.querySelector('.zxU94d.gws-plugins-horizon-jobs__tl-lvc').scrollBy(0, distance);
             totalHeight += distance;
-    
+
             await sleep(1500)
             // console.log("scrollThat 3", lastHeight, elementScrolled.clientHeight)
             if (lastHeight < elementScrolled.clientHeight) {
@@ -42,7 +42,7 @@ async function autoScroll(page) {
                 return
             }
         }
-    
+
 
         await scrollThat()
     });
@@ -93,6 +93,8 @@ exports.SEARCH_PAGE = async (countryCode, page, request, query, requestQueue, ma
                 else
                     content = jobContentElement.querySelector('.JvOW3e')?.innerText
 
+                content = content.replace(/\s+/g, ' ')
+                
                 // console.log("Job", title)
 
                 const elemEmployerLocation = jobContentElement.querySelector('.tJ9zfc')
