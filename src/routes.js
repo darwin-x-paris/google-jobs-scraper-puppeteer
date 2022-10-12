@@ -71,6 +71,7 @@ exports.SEARCH_PAGE = async (countryCode, page, request, query, requestQueue, ma
     const { hostname } = request.userData;
 
     await page.waitForSelector('div.KzzVYe');
+    await page.waitForSelector('.gws-plugins-horizon-jobs__li-ed');
 
     await autoScroll(page);
 
