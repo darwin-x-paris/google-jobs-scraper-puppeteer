@@ -5,13 +5,19 @@ const {
 } = Apify;
 const { applyFunction, saveScreenshot } = require('./utils');
 
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 async function autoScroll(page) {
 
-    
+    await sleep(1000)
+
     for (let i = 0; i<30; i++) {
         
         let lstJob = Array.from(await page.evaluate(() => { return document.querySelectorAll('.gws-plugins-horizon-jobs__li-ed') }))
+
+        console.log("Lst jobs : ", lstJob)
         console.log("Nb jobs loaded :", lstJob.length)
         console.log("Scrolling ...")
     
