@@ -84,9 +84,12 @@ exports.SEARCH_PAGE = async (countryCode, page, request, query, requestQueue, ma
     // log.info(`Found ${resultsLength} products on the page.`); 
     // eslint-disable-next-line no-shadow
 
+    console.log("Scroll ended ...")
     let data = []
 
-    for (let i=0; i<5; i++) {
+    for (let i=0; i<10; i++) {
+
+        console.log("Offset  ...", i)
 
         const lstData = await page.evaluate(
             async (offset, countryCode, maxPostCount, query, savedItems) => {
@@ -143,12 +146,12 @@ exports.SEARCH_PAGE = async (countryCode, page, request, query, requestQueue, ma
                         location,
                     })
 
-                    if ((idx-offset) >= 50) break
+                    if ((idx-offset) >= 20) break
                 }
     
                 return data;
             },
-            i*50,
+            i*20,
             countryCode,
             maxPostCount,
             query,
