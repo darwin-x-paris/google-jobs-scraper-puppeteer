@@ -58,7 +58,7 @@ async function autoScroll(page) {
         let lstJob2 = Array.from(await page.evaluate(() => { return document.querySelectorAll('.gws-plugins-horizon-jobs__li-ed') }))
         console.log("Nb jobs loaded 2 :", lstJob2.length)
 
-        if (lstJob2.length === lstJob.length) break;
+        // if (lstJob2.length === lstJob.length) break;
     }
 
 
