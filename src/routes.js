@@ -70,10 +70,13 @@ exports.SEARCH_PAGE = async (countryCode, page, request, query, requestQueue, ma
     let { savedItems, pageNumber } = request.userData;
     const { hostname } = request.userData;
 
-    await page.waitForSelector('div.KzzVYe');
-    await page.waitForSelector('.gws-plugins-horizon-jobs__li-ed');
+    await page.waitForSelector('div.KzzVYe')
+    await page.waitForSelector('.gws-plugins-horizon-jobs__li-ed')
 
-    await autoScroll(page);
+    let firstJob = await page.evaluate(() => { return document.querySelector('.gws-plugins-horizon-jobs__li-ed') })
+    console.log("First job :", firstJob)
+
+    await autoScroll(page)
 
     let lstJob = await page.evaluate(() => { return document.querySelectorAll('.gws-plugins-horizon-jobs__li-ed') })
     let nbResults = lstJob.length
