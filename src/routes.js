@@ -101,56 +101,61 @@ exports.SEARCH_PAGE = async (countryCode, page, request, query, requestQueue, ma
                 let data = []
                 let lstJob = Array.from(document.querySelectorAll('.gws-plugins-horizon-jobs__li-ed'))
 
-                let idx = 0
-                for (let jobElement of lstJob) {
+                try {
 
-                    idx++
-                    if (idx <= offset) continue
-
-                    if (jobElement.querySelector('.Fol1qc'))
-                    jobElement.querySelector('.Fol1qc').click()
-
-                    await sleep(1500)
-
-                    // Wait ? 0.8 sec ?
-                    const jobContentElement = document.querySelector('.whazf.bD1FPe .pE8vnd.avtvi')
-
-                    if (!jobContentElement.querySelector('.sH3zFd .KLsYvd')) continue
-                    
-                    const title = jobContentElement.querySelector('.sH3zFd .KLsYvd').innerText
-
-                    let content = ''
-                    if (jobContentElement.querySelector('.HBvzbc'))
-                        content = jobContentElement.querySelector('.HBvzbc').innerText
-                    else
-                        content = jobContentElement.querySelector('.JvOW3e')?.innerText
-
-                    if (content) {
-                        content = content.replace(/\s+/g, ' ')
+                    let idx = 0
+                    for (let jobElement of lstJob) {
+    
+                        idx++
+                        if (idx <= offset) continue
+    
+                        if (jobElement.querySelector('.Fol1qc'))
+                        jobElement.querySelector('.Fol1qc').click()
+    
+                        await sleep(1500)
+    
+                        // Wait ? 0.8 sec ?
+                        const jobContentElement = document.querySelector('.whazf.bD1FPe .pE8vnd.avtvi')
+    
+                        if (!jobContentElement.querySelector('.sH3zFd .KLsYvd')) continue
+    
+                        const title = jobContentElement.querySelector('.sH3zFd .KLsYvd').innerText
+    
+                        let content = ''
+                        if (jobContentElement.querySelector('.HBvzbc'))
+                            content = jobContentElement.querySelector('.HBvzbc').innerText
+                        else
+                            content = jobContentElement.querySelector('.JvOW3e')?.innerText
+    
+                        if (content) {
+                            content = content.replace(/\s+/g, ' ')
+                        }
+    
+                        // console.log("Job", title)
+    
+                        const elemEmployerLocation = jobContentElement.querySelector('.tJ9zfc')
+                        const elemsDiv = elemEmployerLocation.querySelectorAll(':scope > div')
+    
+                        // console.log("Employer location : ", elemEmployerLocation)
+    
+                        const employer = elemsDiv[0]?.innerText
+                        const location = elemsDiv[1]?.innerText
+    
+                        // Get infos from job :
+                        data.push({
+                            countryCode,
+                            query,
+                            title,
+                            content,
+                            employer,
+                            location,
+                        })
+    
+                        if ((idx - offset) >= 10) break
                     }
-
-                    // console.log("Job", title)
-
-                    const elemEmployerLocation = jobContentElement.querySelector('.tJ9zfc')
-                    const elemsDiv = elemEmployerLocation.querySelectorAll(':scope > div')
-
-                    // console.log("Employer location : ", elemEmployerLocation)
-
-                    const employer = elemsDiv[0]?.innerText
-                    const location = elemsDiv[1]?.innerText
-
-                    // Get infos from job :
-                    data.push({
-                        countryCode,
-                        query,
-                        title,
-                        content,
-                        employer,
-                        location,
-                    })
-
-                    if ((idx - offset) >= 10) break
-                }
+                    
+                } catch (err) {}
+                
 
                 return data;
             },
