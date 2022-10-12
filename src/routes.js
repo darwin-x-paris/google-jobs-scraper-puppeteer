@@ -14,6 +14,7 @@ async function autoScroll(page) {
 
     for (let i = 0; i < 20; i++) {
 
+        console.log("Scroll", i)
         await page.evaluate(async () => {
 
             function sleep(ms) {
