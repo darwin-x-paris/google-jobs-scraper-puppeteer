@@ -12,6 +12,8 @@ async function autoScroll(page) {
     console.log("Nb jobs loaded :", lstJob.length)
     console.log("Scrolling ...")
 
+    page.setDefaultTimeout(999999000)
+    
     await page.evaluate(async () => {
 
         function sleep(ms) {
@@ -44,7 +46,7 @@ async function autoScroll(page) {
         }
 
         await scrollThat()
-    });
+    }, { timeout: 0 });
 
     let lstJob2 = await page.evaluate(() => { return document.querySelectorAll('.gws-plugins-horizon-jobs__li-ed') })
     console.log("Nb jobs loaded 2 :", lstJob2.length)
