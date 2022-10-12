@@ -46,7 +46,7 @@ Apify.main(async () => {
         persistCookiesPerSession: true,
         maxRequestRetries: 15,
         navigationTimeoutSecs: 150,
-        handlePageTimeoutSecs: 240,
+        handlePageTimeoutSecs: 2400,
         maxConcurrency: 10,
         proxyConfiguration,
         handlePageFunction: async ({ page, request }) => {
