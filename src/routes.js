@@ -13,25 +13,25 @@ async function autoScroll(page) {
 
     await sleep(1000)
 
-    for (let i = 0; i<20; i++) {
-        
+    for (let i = 0; i < 20; i++) {
+
         let lstJob = Array.from(await page.evaluate(() => { return document.querySelectorAll('.gws-plugins-horizon-jobs__li-ed') }))
 
         console.log("Lst jobs : ", lstJob)
         console.log("Nb jobs loaded :", lstJob.length)
         console.log("Scrolling ...")
-    
+
         await page.evaluate(async () => {
-    
+
             function sleep(ms) {
                 return new Promise(resolve => setTimeout(resolve, ms));
             }
-    
+
             let lastHeight = 0
-    
-    
+
+
             async function scrollThat() {
-    
+
                 // console.log("scrollThat 1")
                 await sleep(500)
                 // console.log("scrollThat 2")
@@ -41,17 +41,17 @@ async function autoScroll(page) {
                 var scrollHeight = elementScrolled.scrollHeight
                 document.querySelector('.zxU94d.gws-plugins-horizon-jobs__tl-lvc').scrollBy(0, distance);
                 totalHeight += distance;
-    
+
                 await sleep(1500)
                 console.log("scrollThat 3", lastHeight, elementScrolled.clientHeight)
                 // if (lastHeight < elementScrolled.clientHeight) {
                 //     lastHeight = elementScrolled.clientHeight
-                    // return scrollThat()
+                // return scrollThat()
                 // } else {
                 //     return
                 // }
             }
-    
+
             await scrollThat()
         });
 
@@ -87,55 +87,55 @@ exports.SEARCH_PAGE = async (countryCode, page, request, query, requestQueue, ma
     console.log("Scroll ended ...")
     let data = []
 
-    for (let i=0; i<10; i++) {
+    for (let i = 0; i < 10; i++) {
 
         console.log("Offset  ...", i)
 
         const lstData = await page.evaluate(
             async (offset, countryCode, maxPostCount, query, savedItems) => {
-    
+
                 function sleep(ms) {
                     return new Promise(resolve => setTimeout(resolve, ms));
                 }
-    
+
                 let data = []
                 let lstJob = Array.from(document.querySelectorAll('.gws-plugins-horizon-jobs__li-ed'))
 
                 let idx = -1
                 for (let jobElement of lstJob) {
-    
+
                     idx++
                     if (idx < offset) continue
 
                     jobElement.querySelector('.Fol1qc').click()
-    
-                    await sleep(1000)
-    
+
+                    await sleep(1500)
+
                     // Wait ? 0.8 sec ?
                     const jobContentElement = document.querySelector('.whazf.bD1FPe .pE8vnd.avtvi')
-    
+
                     const title = jobContentElement.querySelector('.sH3zFd .KLsYvd').innerText
-    
+
                     let content = ''
                     if (jobContentElement.querySelector('.HBvzbc'))
                         content = jobContentElement.querySelector('.HBvzbc').innerText
                     else
                         content = jobContentElement.querySelector('.JvOW3e')?.innerText
-    
+
                     if (content) {
                         content = content.replace(/\s+/g, ' ')
                     }
-    
+
                     // console.log("Job", title)
-    
+
                     const elemEmployerLocation = jobContentElement.querySelector('.tJ9zfc')
                     const elemsDiv = elemEmployerLocation.querySelectorAll(':scope > div')
-    
+
                     // console.log("Employer location : ", elemEmployerLocation)
-    
+
                     const employer = elemsDiv[0]?.innerText
                     const location = elemsDiv[1]?.innerText
-    
+
                     // Get infos from job :
                     data.push({
                         countryCode,
@@ -146,12 +146,12 @@ exports.SEARCH_PAGE = async (countryCode, page, request, query, requestQueue, ma
                         location,
                     })
 
-                    if ((idx-offset) >= 20) break
+                    if ((idx - offset) >= 20) break
                 }
-    
+
                 return data;
             },
-            i*20,
+            i * 20,
             countryCode,
             maxPostCount,
             query,
@@ -159,6 +159,7 @@ exports.SEARCH_PAGE = async (countryCode, page, request, query, requestQueue, ma
         );
 
         data.push(...lstData)
+        console.log("Nb data :", data.length, "(+", lstData.length, ")")
     }
 
     await saveScreenshot(page)
