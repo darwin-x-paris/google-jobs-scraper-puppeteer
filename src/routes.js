@@ -105,8 +105,9 @@ exports.SEARCH_PAGE = async (countryCode, page, request, query, requestQueue, ma
                 for (let jobElement of lstJob) {
 
                     idx++
-                    if (idx < offset) continue
+                    if (idx <= offset) continue
 
+                    if (jobElement.querySelector('.Fol1qc'))
                     jobElement.querySelector('.Fol1qc').click()
 
                     await sleep(1500)
@@ -114,6 +115,8 @@ exports.SEARCH_PAGE = async (countryCode, page, request, query, requestQueue, ma
                     // Wait ? 0.8 sec ?
                     const jobContentElement = document.querySelector('.whazf.bD1FPe .pE8vnd.avtvi')
 
+                    if (!jobContentElement.querySelector('.sH3zFd .KLsYvd')) continue
+                    
                     const title = jobContentElement.querySelector('.sH3zFd .KLsYvd').innerText
 
                     let content = ''
