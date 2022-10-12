@@ -12,19 +12,19 @@ async function autoScroll(page) {
     console.log("Nb jobs loaded :", lstJob.length)
     console.log("Scrolling ...")
 
-    for (let i=0; i<20; i++) {
+    for (let i = 0; i < 20; i++) {
 
         await page.evaluate(async () => {
-    
+
             function sleep(ms) {
                 return new Promise(resolve => setTimeout(resolve, ms));
             }
-    
+
             let lastHeight = 0
-    
-    
+
+
             async function scrollThat() {
-    
+
                 // console.log("scrollThat 1")
                 await sleep(500)
                 // console.log("scrollThat 2")
@@ -34,17 +34,17 @@ async function autoScroll(page) {
                 var scrollHeight = elementScrolled.scrollHeight
                 document.querySelector('.zxU94d.gws-plugins-horizon-jobs__tl-lvc').scrollBy(0, distance);
                 totalHeight += distance;
-    
+
                 await sleep(1500)
                 // console.log("scrollThat 3", lastHeight, elementScrolled.clientHeight)
                 // if (lastHeight < elementScrolled.clientHeight) {
-                    // lastHeight = elementScrolled.clientHeight
-                    // return scrollThat()
+                // lastHeight = elementScrolled.clientHeight
+                // return scrollThat()
                 // } else {
                 //     return
                 // }
             }
-    
+
             await scrollThat()
         });
     }
@@ -86,7 +86,7 @@ exports.SEARCH_PAGE = async (countryCode, page, request, query, requestQueue, ma
 
                 // Wait ? 0.8 sec ?
                 const jobContentElement = document.querySelector('.whazf.bD1FPe .pE8vnd.avtvi')
-                
+
                 if (!jobContentElement.querySelector('.sH3zFd .KLsYvd')) continue
 
                 const title = jobContentElement.querySelector('.sH3zFd .KLsYvd').innerText
