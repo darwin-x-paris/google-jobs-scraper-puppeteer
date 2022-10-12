@@ -13,7 +13,7 @@ async function autoScroll(page) {
 
     await sleep(1000)
 
-    for (let i = 0; i<30; i++) {
+    for (let i = 0; i<20; i++) {
         
         let lstJob = Array.from(await page.evaluate(() => { return document.querySelectorAll('.gws-plugins-horizon-jobs__li-ed') }))
 
@@ -43,7 +43,7 @@ async function autoScroll(page) {
                 totalHeight += distance;
     
                 await sleep(1500)
-                // console.log("scrollThat 3", lastHeight, elementScrolled.clientHeight)
+                console.log("scrollThat 3", lastHeight, elementScrolled.clientHeight)
                 // if (lastHeight < elementScrolled.clientHeight) {
                 //     lastHeight = elementScrolled.clientHeight
                     // return scrollThat()
@@ -81,66 +81,82 @@ exports.SEARCH_PAGE = async (countryCode, page, request, query, requestQueue, ma
     let lstJob = await page.evaluate(() => { return document.querySelectorAll('.gws-plugins-horizon-jobs__li-ed') })
     let nbResults = lstJob.length
 
-    // log.info(`Found ${resultsLength} products on the page.`);
+    // log.info(`Found ${resultsLength} products on the page.`); 
     // eslint-disable-next-line no-shadow
-    const data = await page.evaluate(
-        async (countryCode, maxPostCount, query, savedItems) => {
 
-            function sleep(ms) {
-                return new Promise(resolve => setTimeout(resolve, ms));
-            }
+    let data = []
 
-            let data = []
-            let lstJob = Array.from(document.querySelectorAll('.gws-plugins-horizon-jobs__li-ed'))
-            for (let jobElement of lstJob) {
+    for (let i=0; i<5; i++) {
 
-                jobElement.querySelector('.Fol1qc').click()
-
-                await sleep(1000)
-
-                // Wait ? 0.8 sec ?
-                const jobContentElement = document.querySelector('.whazf.bD1FPe .pE8vnd.avtvi')
-
-                const title = jobContentElement.querySelector('.sH3zFd .KLsYvd').innerText
-
-                let content = ''
-                if (jobContentElement.querySelector('.HBvzbc'))
-                    content = jobContentElement.querySelector('.HBvzbc').innerText
-                else
-                    content = jobContentElement.querySelector('.JvOW3e')?.innerText
-
-                if (content) {
-                    content = content.replace(/\s+/g, ' ')
+        const lstData = await page.evaluate(
+            async (offset, countryCode, maxPostCount, query, savedItems) => {
+    
+                function sleep(ms) {
+                    return new Promise(resolve => setTimeout(resolve, ms));
                 }
+    
+                let data = []
+                let lstJob = Array.from(document.querySelectorAll('.gws-plugins-horizon-jobs__li-ed'))
 
-                // console.log("Job", title)
+                let idx = -1
+                for (let jobElement of lstJob) {
+    
+                    idx++
+                    if (idx < offset) continue
 
-                const elemEmployerLocation = jobContentElement.querySelector('.tJ9zfc')
-                const elemsDiv = elemEmployerLocation.querySelectorAll(':scope > div')
+                    jobElement.querySelector('.Fol1qc').click()
+    
+                    await sleep(1000)
+    
+                    // Wait ? 0.8 sec ?
+                    const jobContentElement = document.querySelector('.whazf.bD1FPe .pE8vnd.avtvi')
+    
+                    const title = jobContentElement.querySelector('.sH3zFd .KLsYvd').innerText
+    
+                    let content = ''
+                    if (jobContentElement.querySelector('.HBvzbc'))
+                        content = jobContentElement.querySelector('.HBvzbc').innerText
+                    else
+                        content = jobContentElement.querySelector('.JvOW3e')?.innerText
+    
+                    if (content) {
+                        content = content.replace(/\s+/g, ' ')
+                    }
+    
+                    // console.log("Job", title)
+    
+                    const elemEmployerLocation = jobContentElement.querySelector('.tJ9zfc')
+                    const elemsDiv = elemEmployerLocation.querySelectorAll(':scope > div')
+    
+                    // console.log("Employer location : ", elemEmployerLocation)
+    
+                    const employer = elemsDiv[0]?.innerText
+                    const location = elemsDiv[1]?.innerText
+    
+                    // Get infos from job :
+                    data.push({
+                        countryCode,
+                        query,
+                        title,
+                        content,
+                        employer,
+                        location,
+                    })
 
-                // console.log("Employer location : ", elemEmployerLocation)
+                    if ((idx-offset) >= 50) break
+                }
+    
+                return data;
+            },
+            i*50,
+            countryCode,
+            maxPostCount,
+            query,
+            savedItems,
+        );
 
-                const employer = elemsDiv[0]?.innerText
-                const location = elemsDiv[1]?.innerText
-
-                // Get infos from job :
-                data.push({
-                    countryCode,
-                    query,
-                    title,
-                    content,
-                    employer,
-                    location,
-                })
-            }
-
-            return data;
-        },
-        countryCode,
-        maxPostCount,
-        query,
-        savedItems,
-    );
+        data.push(...lstData)
+    }
 
     await saveScreenshot(page)
 
