@@ -43,7 +43,6 @@ async function autoScroll(page) {
             }
         }
 
-
         await scrollThat()
     });
 
@@ -60,7 +59,7 @@ exports.SEARCH_PAGE = async (countryCode, page, request, query, requestQueue, ma
 
     await page.waitForSelector('div.KzzVYe');
 
-    // await autoScroll(page);
+    await autoScroll(page);
 
     let lstJob = await page.evaluate(() => { return document.querySelectorAll('.gws-plugins-horizon-jobs__li-ed') })
     let nbResults = lstJob.length
@@ -93,8 +92,10 @@ exports.SEARCH_PAGE = async (countryCode, page, request, query, requestQueue, ma
                 else
                     content = jobContentElement.querySelector('.JvOW3e')?.innerText
 
-                content = content.replace(/\s+/g, ' ')
-                
+                if (content) {
+                    content = content.replace(/\s+/g, ' ')
+                }
+
                 // console.log("Job", title)
 
                 const elemEmployerLocation = jobContentElement.querySelector('.tJ9zfc')
