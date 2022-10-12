@@ -87,7 +87,7 @@ exports.SEARCH_PAGE = async (countryCode, page, request, query, requestQueue, ma
     console.log("Scroll ended ...")
     let data = []
 
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 20; i++) {
 
         console.log("Offset  ...", i)
 
@@ -101,7 +101,7 @@ exports.SEARCH_PAGE = async (countryCode, page, request, query, requestQueue, ma
                 let data = []
                 let lstJob = Array.from(document.querySelectorAll('.gws-plugins-horizon-jobs__li-ed'))
 
-                let idx = -1
+                let idx = 0
                 for (let jobElement of lstJob) {
 
                     idx++
@@ -146,12 +146,12 @@ exports.SEARCH_PAGE = async (countryCode, page, request, query, requestQueue, ma
                         location,
                     })
 
-                    if ((idx - offset) >= 20) break
+                    if ((idx - offset) >= 10) break
                 }
 
                 return data;
             },
-            i * 20,
+            i * 10,
             countryCode,
             maxPostCount,
             query,
