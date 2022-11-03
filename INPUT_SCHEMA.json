@@ -15,7 +15,7 @@
             "title": "Job title",
             "type": "string",
             "description": "",
-            "editor": "string",
+            "editor": "textfield",
             "prefill": "web developer"
         },
         "inputUrl": {
