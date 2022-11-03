@@ -56,7 +56,7 @@ async function autoScroll(page) {
 }
 
 
-exports.SEARCH_PAGE = async (countryCode, page, request, query, requestQueue, maxPostCount, evaledFunc) => {
+exports.SEARCH_PAGE = async (countryCode, page, request, query, job_title, requestQueue, maxPostCount, evaledFunc) => {
     // CHECK FOR SELECTOR
     let { savedItems, pageNumber } = request.userData;
     const { hostname } = request.userData;
@@ -71,7 +71,7 @@ exports.SEARCH_PAGE = async (countryCode, page, request, query, requestQueue, ma
     // log.info(`Found ${resultsLength} products on the page.`);
     // eslint-disable-next-line no-shadow
     const data = await page.evaluate(
-        async (countryCode, maxPostCount, query, savedItems) => {
+        async (countryCode, maxPostCount, query, job_title,  savedItems) => {
 
             function sleep(ms) {
                 return new Promise(resolve => setTimeout(resolve, ms));
@@ -116,6 +116,7 @@ exports.SEARCH_PAGE = async (countryCode, page, request, query, requestQueue, ma
                 data.push({
                     countryCode,
                     query,
+                    job_title,
                     title,
                     content,
                     employer,
@@ -128,6 +129,7 @@ exports.SEARCH_PAGE = async (countryCode, page, request, query, requestQueue, ma
         countryCode,
         maxPostCount,
         query,
+        job_title,
         savedItems,
     );
 

@@ -62,20 +62,20 @@ function countryCodeToCountryName(countryCode) {
 }
 
 // New function which forms a URL from countryCode and query params
-function formUrl(countryCode, query) {
+function formUrl(countryCode, query, job_title) {
     const hostname = countryCodeToGoogleHostname(countryCode)
-    const strQuery = '"' + query + '" in ' + countryCodeToCountryName(countryCode);
+    const strQuery = '"' + query + '" "' + job_title.replace(/"/g, '') + '" in ' + countryCodeToCountryName(countryCode);
     const url = `https://www.${hostname}/search?q=${encodeURIComponent(strQuery)}&ibp=htl;jobs#htivrt=jobs&fpstate=tldetail`;
     return { url, hostname };
 }
 
-async function makeRequestList(queries, inputUrl, countryCode) {
+async function makeRequestList(queries, job_title, inputUrl, countryCode) {
     const hostname = countryCodeToGoogleHostname(countryCode);
     let sources = [];
 
     if (!inputUrl) {
         sources = queries.map((query) => {
-            const { url } = formUrl(countryCode, query);
+            const { url } = formUrl(countryCode, query, job_title);
 
             return new Apify.Request({
                 url,

@@ -13,14 +13,18 @@ Apify.main(async () => {
 
     console.log('Input :', input)
 
-    const { queries = null, inputUrl = null, countryCode = 'us', maxPostCount, extendOutputFunction = null } = input;
+    const { queries = null, job_title = null, inputUrl = null, countryCode = 'us', maxPostCount, extendOutputFunction = null } = input;
 
     if (!(queries && countryCode) && !inputUrl) {
         throw new Error('At least "Search Queries & countryCode" or "Input URL" must be provided');
     }
 
+    if (!(job_title && countryCode) && !inputUrl) {
+        throw new Error('job_title must be provided');
+    }
+
     // Prepare the initial list of google shopping queries and request queue
-    const requestList = await makeRequestList(queries, inputUrl, countryCode);
+    const requestList = await makeRequestList(queries, job_title, inputUrl, countryCode);
     log.info('Search URLs:')
     requestList.requests.forEach((r) => { console.log('  ', r.url) })
 
@@ -53,7 +57,7 @@ Apify.main(async () => {
             log.info(`Processing: ${request.url}`);
             log.info(`Number of page: ${request.userData.pageNumber}`);
             const { label, query } = request.userData;
-            return routes[label](countryCode, page, request, query, requestQueue, maxPostCount, evaledFunc);
+            return routes[label](countryCode, page, request, query, job_title, requestQueue, maxPostCount, evaledFunc);
         },
 
         handleFailedRequestFunction: async ({ request }) => {

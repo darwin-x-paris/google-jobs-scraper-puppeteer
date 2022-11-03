@@ -11,6 +11,13 @@
             "editor": "stringList",
             "prefill": ["pernod ricard"]
         },
+        "job_title": {
+            "title": "Job title",
+            "type": "string",
+            "description": "",
+            "editor": "string",
+            "prefill": "web developer"
+        },
         "inputUrl": {
             "title": "Input URL",
             "type": "array",
